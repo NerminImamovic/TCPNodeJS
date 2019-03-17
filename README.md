@@ -4,7 +4,7 @@ TCP protocol implementation in Node.js.
 
 ## Getting Started
 
-Understanding TCP protocol in Node.js follow *Build custom protocol on top of TCP with Node.js* - [PurpleBooth](https://medium.com/@nikolaystoykov/build-custom-protocol-on-top-of-tcp-with-node-js-part-1-fda507d5a262)
+Understanding TCP protocol in Node.js following [ *Build custom protocol on top of TCP with Node.js* ](https://medium.com/@nikolaystoykov/build-custom-protocol-on-top-of-tcp-with-node-js-part-1-fda507d5a262)
 
 ### Installing
 
