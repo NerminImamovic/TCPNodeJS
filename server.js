@@ -1,39 +1,67 @@
 'use strict';
 
-const net = require('net');
-const uuidv4 = require('uuid/v4');
-const Networker = require('./networker');
+var net = require("net");
+var server = net.createServer();
 
-let rooms = {};
-let clients = [];
-let server = net.createServer();
+var colors = require("colors");
 
-server.on('connection', (socket) => {
-    console.log('new client arrived');
-    socket.id = uuidv4();
-
-    let networker = new Networker(socket, (data) => {
-        console.log('received:', data.toString());
-    })
-    networker.init();
-    clients.push({ socket, networker });
-    networker.send('Greetings traveller!');
-
-    socket.on('end', () => {
-        console.log('socket end');
-    });
-
-    socket.on('close', () => {
-        console.log('socket close');
-    });
-
-    socket.on('error', (e) => {
-        console.log(e);
-    });
+server.on("connection", handleConnection);
+server.listen(9000, function () {
+    console.log("server listening to %j", server.address());
 });
 
-server.on('error', (e) => {
-    console.log(e);
-});
+function handleConnection(conn) { 
+    var remoteAddress = conn.remoteAddress + ':' + conn.remotePort;
+    console.log("new client connection from %s".green, remoteAddress);
 
-server.listen(8000);
+    conn.on("data", onConnData);
+    conn.once("close", onConnClose);
+    conn.on("eror", onConnError);
+
+    function onConnData(d) {
+        console.log("Connection data from %s: %s".cyan, remoteAddress, d);
+        conn.write("Hello " + d);
+    }
+
+    function onConnClose() {
+        console.log("connection from %s closed".yellow, remoteAddress);
+    }
+
+    function onConnError(err) {
+        console.log("Connection %s error: %s".red, remoteAddress, err.message);
+    }
+
+}
+
+// var net = require("net");
+// var server = net.createServer();
+
+// var colors = require("colors");
+
+// server.on("connection", handleConnection);
+// server.listen(9000, function () {
+//     console.log("server listening to %j", server.address());
+// });
+
+// function handleConnection(conn) {
+//     var remoteAddress = conn.remoteAddress + ':' + conn.remotePort;
+//     console.log("new client connection from %s".green, remoteAddress);
+    
+//     conn.on("data", onConnData);
+//     conn.once("close", onConnClose);
+//     conn.on("error", onConnError);
+    
+//     function onConnData(d) {
+//         //console.log('connection data from %s: %j', remoteAddress, d);
+//         console.log("connection data from %s: %s".cyan, remoteAddress, d.toString("ascii"));
+//         conn.write("Hello " + d);
+//     }
+    
+//     function onConnClose() {
+//         console.log("connection from %s closed".yellow, remoteAddress);
+//     }
+    
+//     function onConnError(err) {
+//         console.log("Connection %s error: %s".red, remoteAddress, err.message);
+//     }
+// }
